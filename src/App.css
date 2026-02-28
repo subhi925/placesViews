@@ -1,0 +1,13 @@
+@import "tailwindcss";
+* {
+  box-sizing: border-box;
+}
+.grid-container {
+  justify-items: center;
+  display: grid;
+  grid-template-areas:
+  'header'
+  'main-content';
+  background-color: white;
+  gap: 10px;
+}
