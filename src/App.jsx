@@ -18,7 +18,7 @@ const App = () => {
           <Navbar />
         </div>{" "}
         <h1 className=" bg-linear-to-r from-pink-500 to-violet-500 bg-clip-text text-5xl font-extrabold text-transparent">
-          5555555555
+          Places View
         </h1>
         <div className="main-content">
           <Routes>
