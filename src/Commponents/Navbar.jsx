@@ -43,10 +43,8 @@ const Navbar = () => {
           05
         </Link>
       </span>
-      <span className="box-border size-20  p-1 m-2">
-        <Link to="/logout" className="flex flex-col items-center">
-          06
-        </Link>
+      <span className="box-border size-20 border-4 p-1 m-2">
+        <Link to="/logout">06</Link>
       </span>
     </div>
   );
