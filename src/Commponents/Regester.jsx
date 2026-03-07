@@ -25,6 +25,9 @@ const Regester = () => {
     let cleanEmail = email.trim().toLowerCase(); // Trim and convert email to lowercase
     let cleanPassword = password.trim(); // Trim password
     let cleanConfirmPassword = confirmPassword.trim(); // Trim confirm password
+    if (!cleanEmail || !cleanPassword || !cleanConfirmPassword) {
+      return setMsg("All fields are required");
+    }
     if (!emailRegex.test(cleanEmail)) {
       return setMsg("Invalid email format");
     }
@@ -49,7 +52,7 @@ const Regester = () => {
         setMsg("Email is already registered Go to Login page");
         setDisableBtn(false);
       } else {
-        setMsg("Registration failed: " + error.message);
+        setMsg("Registration failed. Please try again.");
         setDisableBtn(false);
       }
     } finally {
