@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Navbar from "./Commponents/Navbar";
 import Regester from "./Commponents/Regester";
+import Profile from "./Commponents/Profile";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/home" element={<h1>Home Page</h1>} />
             <Route path="/Regester" element={<Regester />} />
             <Route path="/contact" element={<h1>Contact Page</h1>} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
       </Router>
