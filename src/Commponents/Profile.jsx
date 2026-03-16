@@ -11,6 +11,8 @@ const Profile = () => {
   const [user] = useAuthState(auth);
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isTherename, setIsTherename] = useState(false);
+  const [showbtn, setShowbtn] = useState(true);
 
   // Load categories from the backend API
 
@@ -64,6 +66,10 @@ const Profile = () => {
     }
     try {
       await updateProfile(user, { displayName: displayName });
+      //window.location.reload();
+      setIsTherename(true);
+      setShowbtn(false);
+
     } catch (error) {
       console.error("Error updating display name:", error);
       alert("Failed to update display name. Please try again.");
@@ -73,8 +79,13 @@ const Profile = () => {
   useEffect(() => {
     if (user) {
       setLoading(false);
+      if (user.displayName) {
+        setIsTherename(true);
+
+      }
+
     }
-  }, [user]);
+  }, [user, isTherename]);
 
   //checks & debugs
   useEffect(() => {
@@ -86,7 +97,7 @@ const Profile = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
-  if (!user.displayName) {
+  if (!user.displayName && !isTherename) {
     return (
       <>
         <input
@@ -96,19 +107,20 @@ const Profile = () => {
           placeholder="Enter your display name"
           className="border-2 border-gray-400 rounded-md p-2 m-2 col-span-3"
         />
-        <button
-          onClick={() => updatedisplayName()}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md m-2 col-span-3"
-        >
-          Update Name
-        </button>
+        {showbtn && (
+          <button
+            onClick={() => updatedisplayName()}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md m-2 col-span-3">
+            Update Name
+          </button>
+        )}
       </>
     );
   } else {
     return (
       <div className="grid grid-cols-3 gap-3">
         <h1 className="flex justify-center font-bold text-2xl  col-span-3">
-          Current User : {user.displayName}
+          Current User : {user.displayName || displayName}
         </h1>
         {/* Placeholder content for the Profile page */}
         {categories.map((cat, idx) =>
