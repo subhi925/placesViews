@@ -36,8 +36,6 @@ const Regester = () => {
       return setMsg(
         "Password must be at least 8 characters long and contain at least one letter and one number",
       );
-
-      
     }
     if (cleanPassword !== cleanConfirmPassword) {
       return setMsg("Passwords do not match");
