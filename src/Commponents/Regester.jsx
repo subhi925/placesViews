@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
-import {
-  createUserWithEmailAndPassword,
-  fetchSignInMethodsForEmail,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../fire"; // Importing auth from firebase configuration
 
 const Regester = () => {
