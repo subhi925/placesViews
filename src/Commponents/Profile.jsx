@@ -14,6 +14,30 @@ const Profile = () => {
   const [isTherename, setIsTherename] = useState(false);
   const [showbtn, setShowbtn] = useState(true);
   const [error, setError] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  //load user preferences from the backend API
+  const loadUserPreferences = async (user) => {
+    if (!user) return;
+    const formData = new FormData();
+    formData.append("userId", user);
+    const url =
+      "http://localhost:8080/placesViews/public/LoadUserPreferences.php";
+
+    try {
+      const res = await axios.post(url, formData);
+      const userPreferences = res.data;
+      if (
+        userPreferences &&
+        userPreferences.length > 0 &&
+        userPreferences !== null
+      ) {
+        setSelectedCategory(JSON.parse(userPreferences));
+      }
+    } catch (error) {
+      setError("Failed to load user preferences. Please try again.");
+      console.error("Error loading user preferences:", error);
+    }
+  };
 
   // Load categories from the backend API
 
@@ -73,13 +97,16 @@ const Profile = () => {
       setIsTherename(true);
       setShowbtn(false);
     } catch (error) {
-      console.error("Error updating display name:", error);
       setError("Failed to update display name. Please try again.");
     }
   };
   //change the loading state when the user data is loaded
   useEffect(() => {
     if (user) {
+      const callLoadPreferences = async () => {
+        await loadUserPreferences(user.uid);
+      };
+      callLoadPreferences();
       setLoading(false);
       if (user.displayName) {
         setIsTherename(true);
@@ -90,22 +117,21 @@ const Profile = () => {
   // Save preferences to the backend API
   const savePreferences = async (categoriesToSave) => {
     if (!user) return;
+    const formData = new FormData();
+    formData.append("userId", user.uid);
+    formData.append("categories", JSON.stringify(categoriesToSave));
+    const url = "http://localhost:8080/placesViews/public/SavePreferences.php";
+    setIsSaving(true); // Set saving state to true when starting the save operation
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/placesViews/public/SavePreferences.php",
-        {
-          userId: user.uid, // Assuming you want to associate preferences with the user's UID
-          categories: categoriesToSave.map((c) => c.Category), // Send only the category names to the backend
-        },
-      );
-      console.log("Preferences saved successfully:", response.data);
+      const response = await axios.post(url, formData);
+      setIsSaving(false); // Reset the saving state after the save operation is attempted
     } catch (err) {
-      console.error("Error saving preferences:", err);
       setError("Failed to save your choices. Please try again.");
+      setIsSaving(false); // Reset the saving state even if the save operation fails
     }
   };
-//--------------------------------------------------------
+  //--------------------------------------------------------
   // Debounce the savePreferences function to avoid excessive API calls when the user clicks categories rapidly
   useEffect(() => {
     // Don't attempt to save preferences if there are no selected categories or if the user data is still loading
@@ -113,7 +139,7 @@ const Profile = () => {
 
     // Set a timeout to save preferences after a short delay (e.g., 800ms) to allow for multiple rapid clicks without making multiple API calls
     const delayDebounceFn = setTimeout(() => {
-      savePreferences(selectedCategory);
+      savePreferences(selectedCategory); // Reset the saving state after the save operation is attempted
     }, 800);
 
     // Cleanup function - clears the timeout if the user clicks again before the delay is over
@@ -124,11 +150,10 @@ const Profile = () => {
   useEffect(() => {
     console.log(selectedCategory);
   }, [selectedCategory]);
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
+
   //---------------------------------------------------------
   // Render the Profile page
+
   if (error) {
     return <div className="text-red-500 font-bold">{error}</div>;
   }
@@ -160,6 +185,11 @@ const Profile = () => {
   } else {
     return (
       <div className="grid grid-cols-3 gap-3">
+        {isSaving && (
+          <div className="fixed top-5 right-5 bg-blue-500 text-white p-2 rounded shadow-lg z-50">
+            Saving... 💾
+          </div>
+        )}
         <h1 className="flex justify-center font-bold text-2xl  col-span-3">
           Current User : {user.displayName || displayName}
         </h1>
@@ -190,6 +220,6 @@ const Profile = () => {
       </div>
     );
   }
-};;
+};
 
 export default Profile;
